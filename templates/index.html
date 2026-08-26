@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HERMIT: Harmonized Embedding of RNA and Methylation for Integration and Translation.">
+    <title>HERMIT | Harmonized RNA and Methylation Embedding</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+    <canvas id="ambientCanvas" class="ambient-canvas" aria-hidden="true"></canvas>
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-line">
+                    <h1>HERMIT</h1>
+                    <span class="brand-expansion">Harmonized Embedding of RNA and Methylation for Integration and Translation</span>
+                </div>
+                <div class="modality-flow" aria-label="RNA, 5mC, and 5hmC modalities">
+                    <span class="modality-runner runner-rna">
+                        <svg class="molecular-illustration rna-illustration" viewBox="0 0 132 60" aria-hidden="true">
+                            <text class="terminal-label" x="1" y="13">5'</text>
+                            <path class="rna-bond" d="M10 17 L17 23 M27 27 L35 36 M52 29 L62 32 M72 35 L81 40 M98 34 L107 27 M118 28 L127 37"></path>
+                            <circle class="phosphate-ring" cx="22" cy="25" r="6"></circle>
+                            <circle class="phosphate-ring" cx="67" cy="33" r="6"></circle>
+                            <circle class="phosphate-ring" cx="112" cy="25" r="6"></circle>
+                            <text class="phosphate-label" x="19" y="28">P</text>
+                            <text class="phosphate-label" x="64" y="36">P</text>
+                            <text class="phosphate-label" x="109" y="28">P</text>
+                            <path class="ribose-ring" d="M34 25 L44 20 L52 29 L47 39 L35 36 Z"></path>
+                            <path class="ribose-ring" d="M79 30 L89 25 L98 34 L93 44 L81 40 Z"></path>
+                            <text class="sugar-oxygen" x="31" y="28">O</text>
+                            <text class="sugar-oxygen" x="76" y="33">O</text>
+                            <path class="base-bond" d="M44 20 L44 11 M89 24 L89 15"></path>
+                            <circle class="base-node" cx="44" cy="7" r="6"></circle>
+                            <circle class="base-node" cx="89" cy="11" r="6"></circle>
+                            <text class="base-label" x="41" y="10">A</text>
+                            <text class="base-label" x="86" y="14">U</text>
+                            <path class="hydroxyl-bond" d="M47 39 L52 49"></path>
+                            <text class="hydroxyl-label" x="53" y="55">2'-OH</text>
+                            <text class="terminal-label" x="121" y="51">3'</text>
+                        </svg>
+                        <span class="runner-label">RNA</span>
+                    </span>
+                    <span class="modality-runner runner-mc">
+                        <svg class="molecular-illustration cytosine-illustration" viewBox="0 0 132 60" aria-hidden="true">
+                            <path class="chemical-bond" d="M48 11 L67 21 L67 42 L48 53 L29 42 L29 21 Z"></path>
+                            <path class="chemical-bond double-bond" d="M35 21 L47 14 M62 24 L62 39"></path>
+                            <path class="chemical-bond carbonyl-bond" d="M28 44 L15 51 M31 48 L18 55"></path>
+                            <path class="chemical-bond substituent-bond" d="M48 11 L36 4 M67 21 L81 13"></path>
+                            <text class="chemical-atom amino-group" x="8" y="8">H<tspan dy="2" font-size="7">2</tspan><tspan dy="-2">N</tspan></text>
+                            <text class="chemical-atom oxygen-atom" x="4" y="59">O</text>
+                            <text class="chemical-atom ring-n ring-n3" x="24" y="25">N</text>
+                            <text class="chemical-atom ring-n ring-n1" x="40" y="58">NH</text>
+                            <text class="chemical-group" x="83" y="16">CH<tspan dy="2" font-size="7">3</tspan></text>
+                        </svg>
+                        <span class="runner-label">5mC</span>
+                    </span>
+                    <span class="modality-runner runner-hmc">
+                        <svg class="molecular-illustration cytosine-illustration" viewBox="0 0 132 60" aria-hidden="true">
+                            <path class="chemical-bond" d="M48 11 L67 21 L67 42 L48 53 L29 42 L29 21 Z"></path>
+                            <path class="chemical-bond double-bond" d="M35 21 L47 14 M62 24 L62 39"></path>
+                            <path class="chemical-bond carbonyl-bond" d="M28 44 L15 51 M31 48 L18 55"></path>
+                            <path class="chemical-bond substituent-bond" d="M48 11 L36 4 M67 21 L81 13"></path>
+                            <text class="chemical-atom amino-group" x="8" y="8">H<tspan dy="2" font-size="7">2</tspan><tspan dy="-2">N</tspan></text>
+                            <text class="chemical-atom oxygen-atom" x="4" y="59">O</text>
+                            <text class="chemical-atom ring-n ring-n3" x="24" y="25">N</text>
+                            <text class="chemical-atom ring-n ring-n1" x="40" y="58">NH</text>
+                            <text class="chemical-group" x="83" y="16">CH<tspan dy="2" font-size="7">2</tspan><tspan dy="-2">OH</tspan></text>
+                        </svg>
+                        <span class="runner-label">5hmC</span>
+                    </span>
+                </div>
+            </div>
+            <div class="header-summary" aria-label="Dataset summary">
+                <span><strong id="headerCells">-</strong> paired cells</span>
+                <span><strong id="headerPoints">-</strong> modality points</span>
+                <a class="download-button" href="{{ url_for('download_csv') }}">Download CSV</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-shell">
+        <aside class="control-panel" aria-label="Visualization controls">
+            <section class="control-section dataset-section">
+                <span class="section-label">Dataset</span>
+                <h2>RNA + 5hmC + 5mC</h2>
+                <div class="modality-key" aria-label="Modalities">
+                    <span><i class="swatch rna"></i>RNA</span>
+                    <span><i class="swatch hmc"></i>5hmC</span>
+                    <span><i class="swatch mc"></i>5mC</span>
+                </div>
+            </section>
+
+            <section class="control-section">
+                <span class="section-label">Color</span>
+                <div class="segmented-control" role="group" aria-label="Color points by">
+                    <button class="segment active" type="button" data-color="subclass" aria-pressed="true">Subclass</button>
+                    <button class="segment" type="button" data-color="modality" aria-pressed="false">Modality</button>
+                </div>
+            </section>
+
+            <section class="control-section compact-controls">
+                <label for="pointSize">
+                    <span>Point size</span>
+                    <output id="pointSizeValue" for="pointSize">3</output>
+                </label>
+                <input id="pointSize" type="range" min="1" max="8" value="3">
+                <label for="opacity">
+                    <span>Opacity</span>
+                    <output id="opacityValue" for="opacity">0.7</output>
+                </label>
+                <input id="opacity" type="range" min="0.1" max="1" step="0.1" value="0.7">
+            </section>
+
+            <section class="control-section stats-section">
+                <span class="section-label">Current view</span>
+                <dl class="stats-grid">
+                    <div><dt>Points</dt><dd id="visiblePoints">-</dd></div>
+                    <div><dt>Subclasses</dt><dd id="visibleSubclasses">-</dd></div>
+                    <div><dt>Modalities</dt><dd id="visibleModalities">3</dd></div>
+                </dl>
+            </section>
+
+            <section class="control-section filter-section">
+                <div class="section-heading">
+                    <span class="section-label">Subclass filter</span>
+                    <button id="clearFilter" class="text-button" type="button" disabled>Clear</button>
+                </div>
+                <input id="searchSubclass" class="search-input" type="search" placeholder="Search subclasses" autocomplete="off">
+                <div id="subclassList" class="subclass-list" aria-live="polite"></div>
+            </section>
+        </aside>
+
+        <section class="visualization-workspace">
+            <div class="plot-panel">
+                <div class="panel-header">
+                    <div>
+                        <span class="section-label">Aligned representation</span>
+                        <h2>Paired latent-space UMAP</h2>
+                    </div>
+                    <button id="resetView" class="secondary-button" type="button">Reset view</button>
+                </div>
+                <div id="loading" class="loading" role="status">
+                    <span class="spinner"></span>
+                    <span>Loading paired data</span>
+                </div>
+                <div id="errorState" class="error-state" hidden></div>
+                <div id="umapPlot" class="umap-plot" aria-label="Interactive UMAP projection"></div>
+            </div>
+
+            <div class="composition-panel">
+                <div class="panel-header">
+                    <div>
+                        <span class="section-label">Paired coverage</span>
+                        <h2>Modality composition by subclass</h2>
+                    </div>
+                </div>
+                <div id="modalityChartWrap" class="chart-scroll">
+                    <div id="modalityChart" class="modality-chart"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script defer src="{{ url_for('static', filename='js/ambient-network.js') }}"></script>
+</body>
+</html>
