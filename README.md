@@ -29,7 +29,6 @@ cells, unpaired 5hmC cells, or `integration_results_annotated.csv`.
 - point-size and opacity controls
 - modality coverage comparison by subclass
 - interactive side-gutter connections on wide screens
-- downloadable paired visualization data
 
 ## Local Docker run
 

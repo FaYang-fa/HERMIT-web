@@ -5,12 +5,11 @@ import json
 import os
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, render_template, request, send_file
+from flask import Flask, Response, jsonify, render_template, request
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data" / "web_data"
 DATA_FILE = DATA_DIR / "umap_data.json"
-CSV_FILE = DATA_DIR / "umap_data.csv"
 
 app = Flask(__name__)
 _raw_data = b""
@@ -68,13 +67,6 @@ def umap_data():
 @app.get("/api/stats")
 def stats():
     return jsonify(_stats)
-
-
-@app.get("/api/download/csv")
-def download_csv():
-    if not CSV_FILE.exists():
-        return jsonify({"error": "CSV data is unavailable."}), 404
-    return send_file(CSV_FILE, as_attachment=True, download_name="HERMIT_paired_umap.csv")
 
 
 @app.get("/health")

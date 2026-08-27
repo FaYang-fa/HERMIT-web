@@ -287,7 +287,6 @@ input:focus-visible {
     font-size: 19px;
 }
 
-.download-button,
 .secondary-button {
     align-items: center;
     border-radius: 6px;
@@ -298,20 +297,6 @@ input:focus-visible {
     min-height: 38px;
     padding: 0 14px;
     text-decoration: none;
-}
-
-.download-button {
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    box-shadow: 0 5px 14px rgba(22, 121, 111, 0.18);
-    color: #ffffff;
-    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.download-button:hover {
-    background: #0f655d;
-    box-shadow: 0 7px 18px rgba(22, 121, 111, 0.23);
-    transform: translateY(-1px);
 }
 
 .secondary-button {
@@ -808,9 +793,6 @@ input[type="range"] {
         width: 100%;
     }
 
-    .download-button {
-        margin-left: auto;
-    }
 }
 
 @media (max-width: 1360px) {
@@ -914,10 +896,6 @@ input[type="range"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .download-button {
-        transition: none;
-    }
-
     .modality-flow {
         align-items: center;
         display: flex;
