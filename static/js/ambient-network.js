@@ -3,6 +3,8 @@
 (() => {
     const canvas = document.getElementById("ambientCanvas");
     const shell = document.querySelector(".app-shell");
+    const controlPanel = document.querySelector(".control-panel");
+    const workspace = document.querySelector(".visualization-workspace");
     if (!canvas || !shell) {
         return;
     }
@@ -60,7 +62,7 @@
         ["left", "right"].forEach((side, sideIndex) => {
             const zone = zones[side];
             const zoneWidth = zone.max - zone.min;
-            const count = Math.max(12, Math.min(32, Math.round(zoneWidth / 28)));
+            const count = Math.max(10, Math.min(32, Math.round(height / 100 + zoneWidth / 32)));
             for (let index = 0; index < count; index += 1) {
                 const angle = random() * Math.PI * 2;
                 const speed = reducedMotion ? 0 : 0.08 + random() * 0.14;
@@ -87,13 +89,17 @@
         canvas.style.height = `${height}px`;
         context.setTransform(deviceScale, 0, 0, deviceScale, 0, 0);
         const shellRect = shell.getBoundingClientRect();
-        const sidePadding = 24;
-        const leftMax = shellRect.left - sidePadding;
-        const rightMin = shellRect.right + sidePadding;
-        zones = leftMax >= 90 && width - rightMin >= 90
+        const controlRect = controlPanel?.getBoundingClientRect();
+        const workspaceRect = workspace?.getBoundingClientRect();
+        const edgeInset = 10;
+        const contentGap = 12;
+        const leftMax = (controlRect?.left ?? shellRect.left) - contentGap;
+        const rightMin = (workspaceRect?.right ?? shellRect.right) + contentGap;
+        const minimumZoneWidth = 36;
+        zones = leftMax - edgeInset >= minimumZoneWidth && width - edgeInset - rightMin >= minimumZoneWidth
             ? {
-                left: {min: 18, max: leftMax},
-                right: {min: rightMin, max: width - 18}
+                left: {min: edgeInset, max: leftMax},
+                right: {min: rightMin, max: width - edgeInset}
             }
             : null;
         pointer.active = false;
